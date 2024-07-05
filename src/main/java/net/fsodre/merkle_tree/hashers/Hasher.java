@@ -18,4 +18,9 @@ public interface Hasher {
      * Hashes the data provided through a stream.
      */
     MerkleHash hash(InputStream inputStream) throws IOException;
+
+    /**
+     * Number of output bits
+     */
+    int outputBitsCount();
 }

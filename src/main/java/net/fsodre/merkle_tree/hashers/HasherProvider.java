@@ -5,7 +5,7 @@ package net.fsodre.merkle_tree.hashers;
  */
 public class HasherProvider {
 
-    private static Hasher hasher = new Sha256Hasher();
+    private static Hasher hasher = new Sha512256Hasher();
 
     public static void setHasher(Hasher hasher) {
         HasherProvider.hasher = hasher;

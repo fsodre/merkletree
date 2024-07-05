@@ -25,6 +25,8 @@ import net.fsodre.merkle_tree.hashers.MerkleHash;
  * work for input data that have "1" or "9" digits in it.
  */
 final public class TestHasher implements Hasher {
+    private final static int OUTPUT_BIT_COUNT = 256;
+    private final static int OUTPUT_HEX_CHAR_COUNT = OUTPUT_BIT_COUNT / 4;
 
     /**
      * Creates a MerkleHash by hashing the data provided as an array of bytes.
@@ -46,8 +48,8 @@ final public class TestHasher implements Hasher {
      * Fills the string with '0' at the end to make it have the expected size.
      */
     public static byte[] paddedHash(String hash) throws DecoderException {
-        if (hash.length() < MerkleHash.EXPECTED_SIZE_IN_CHARS) {
-            String format = "%-" + String.valueOf(MerkleHash.EXPECTED_SIZE_IN_CHARS) + "s";
+        if (hash.length() < OUTPUT_HEX_CHAR_COUNT) {
+            String format = "%-" + String.valueOf(OUTPUT_HEX_CHAR_COUNT) + "s";
             hash = String.format(format, hash).replace(' ', '0');
         }
         return Hex.decodeHex(hash);
@@ -60,7 +62,7 @@ final public class TestHasher implements Hasher {
                 .mapToObj(c -> String.valueOf((char) c))
                 .collect(Collectors.joining());
 
-        assert result.length() < MerkleHash.EXPECTED_SIZE_IN_CHARS - 2 : "Test hash is too long.";
+        assert result.length() < OUTPUT_HEX_CHAR_COUNT - 2 : "Test hash is too long.";
 
         String hashed = String.format("1%s9", result);
 
@@ -69,5 +71,10 @@ final public class TestHasher implements Hasher {
         } catch (DecoderException e) {
             throw new RuntimeException("This should never happen");
         }
+    }
+
+    @Override
+    public int outputBitsCount() {
+        return OUTPUT_BIT_COUNT;
     }
 }

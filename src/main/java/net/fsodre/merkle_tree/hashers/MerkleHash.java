@@ -13,9 +13,6 @@ import org.apache.commons.codec.binary.Hex;
 final public class MerkleHash implements Serializable {
 
     private static final long serialVersionUID = 1L;
-    public static final int EXPECTED_SIZE_IN_BITS = 256;
-    public static final int EXPECTED_SIZE_IN_BYTES = EXPECTED_SIZE_IN_BITS / 8;
-    public static final int EXPECTED_SIZE_IN_CHARS = EXPECTED_SIZE_IN_BITS / 4;
 
     // Bytes of the hash code.
     final private byte[] bytes;
@@ -51,7 +48,7 @@ final public class MerkleHash implements Serializable {
      * size.
      */
     public static MerkleHash fromHashCode(byte[] bytes) {
-        assert bytes.length == EXPECTED_SIZE_IN_BYTES : "Invalid hash size upon creation";
+        assert bytes.length == expectedSizeInBytes() : "Invalid hash size upon creation";
         return new MerkleHash(bytes);
     }
 
@@ -89,10 +86,18 @@ final public class MerkleHash implements Serializable {
         if (other == null) {
             return bytes.clone();
         }
-        byte[] result = new byte[2 * EXPECTED_SIZE_IN_BYTES];
-        System.arraycopy(this.bytes, 0, result, 0, EXPECTED_SIZE_IN_BYTES);
-        System.arraycopy(other.bytes, 0, result, EXPECTED_SIZE_IN_BYTES, EXPECTED_SIZE_IN_BYTES);
+        byte[] result = new byte[2 * expectedSizeInBytes()];
+        System.arraycopy(this.bytes, 0, result, 0, expectedSizeInBytes());
+        System.arraycopy(other.bytes, 0, result, expectedSizeInBytes(), expectedSizeInBytes());
         return result;
+    }
+
+    public static int expectedSizeInBytes() {
+        return HasherProvider.getHasher().outputBitsCount() / 8;
+    }
+
+    public static int expectedSizeInHexChars() {
+        return HasherProvider.getHasher().outputBitsCount() / 4;
     }
 
     private MerkleHash(byte[] bytes) {

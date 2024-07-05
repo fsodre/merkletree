@@ -15,7 +15,7 @@ that we don't need to recompute hashes of the ancestors of the leaves that were 
 
 ## Hash Function
 
-This implementation uses `SHA-256` as hashing strategy by default. However, it's easy to add and use others by implementing a `Hasher` interface and configuring it with `HasherProvider`.
+This implementation uses `SHA-512/256` as hashing strategy by default due to its [favourable security properties](https://en.wikipedia.org/wiki/SHA-2#Comparison_of_SHA_functions). However, it's easy to add and use others by implementing a `Hasher` interface and configuring it with `HasherProvider`.
 
 ```
 final public class MyHasher implements Hasher {

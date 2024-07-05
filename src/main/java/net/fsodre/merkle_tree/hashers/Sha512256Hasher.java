@@ -5,29 +5,36 @@ import java.io.InputStream;
 
 import org.apache.commons.codec.digest.DigestUtils;
 
-/**
- * An implementation of Hasher interface that uses SHA-256 to hash data.
- */
-public class Sha256Hasher implements Hasher {
+public class Sha512256Hasher implements Hasher {
 
     /**
      * Returns a MerkleHash created by hashing data in local memory using
-     * SHA256.
+     * SHA512-256.
      */
     @Override
     public MerkleHash hash(byte[] data) {
-        return MerkleHash.fromHashCode(DigestUtils.sha256(data));
+        return MerkleHash.fromHashCode(DigestUtils.sha512_256(data));
     }
 
     /**
      * Returns a MerkleHash created by hashing data read from a stream using
-     * SHA256.
+     * SHA512-256.
      *
      * @throws IOException upon issues reading the data from the stream.
      */
     @Override
     public MerkleHash hash(InputStream inputStream) throws IOException {
-        return MerkleHash.fromHashCode(DigestUtils.sha256(inputStream));
+        return MerkleHash.fromHashCode(DigestUtils.sha512_256(inputStream));
     }
 
+    /**
+     * Returns the number of bits output by SHA512-256.
+     *
+     * @throws IOException upon issues reading the data from the stream.
+     */
+    @Override
+    public int outputBitsCount() {
+        return 256;
+    }
+    
 }

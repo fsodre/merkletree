@@ -7,23 +7,23 @@ import org.apache.commons.codec.digest.DigestUtils;
 import static org.junit.jupiter.api.Assertions.assertArrayEquals;
 import org.junit.jupiter.api.Test;
 
-public class Sha256HasherTest {
+public class Sha512256HasherTest {
 
-    private final Sha256Hasher hasher = new Sha256Hasher();
+    private final Sha512256Hasher hasher = new Sha512256Hasher();
 
     @Test
-    public void testSha256Hashing() {
+    public void testSha512256Hashing() {
         MerkleHash hash = hasher.hash("a".getBytes());
 
-        assertArrayEquals(hash.toBytes(), DigestUtils.sha256("a"));
+        assertArrayEquals(hash.toBytes(), DigestUtils.sha512_256("a"));
     }
 
     @Test
-    public void testSha256StreamHashing() throws Exception {
+    public void testSha512256StreamHashing() throws Exception {
         InputStream stream = new ByteArrayInputStream("a".getBytes());
 
         MerkleHash hash = hasher.hash(stream);
 
-        assertArrayEquals(hash.toBytes(), DigestUtils.sha256("a"));
+        assertArrayEquals(hash.toBytes(), DigestUtils.sha512_256("a"));
     }
 }
