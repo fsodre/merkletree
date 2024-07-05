@@ -8,6 +8,7 @@ import org.junit.jupiter.api.Test;
 import net.fsodre.merkle_tree.hashers.HasherProvider;
 import net.fsodre.merkle_tree.hashers.MerkleHash;
 import net.fsodre.merkle_tree.nodes.LeafNode;
+import net.fsodre.merkle_tree.utils.SerializationUtils;
 import net.fsodre.merkle_tree.utils.TestHasher;
 import static net.fsodre.merkle_tree.utils.TestHasher.paddedHash;
 
@@ -15,7 +16,7 @@ public class ExistenceProofTest {
 
     @BeforeAll
     public static void setUpSuite() {
-        HasherProvider.initialize(new TestHasher());
+        HasherProvider.setHasher(new TestHasher());
     }
 
     @Test
@@ -106,5 +107,18 @@ public class ExistenceProofTest {
         proof.addRightSibling(MerkleHash.fromHashCode(paddedHash("11c99")));
 
         assertTrue(proof.validate(node.getHash(), MerkleHash.fromHashCode(paddedHash("111a9911c999"))));
+    }
+
+    @Test
+    public void testSerialization() throws Exception {
+        ExistenceProof proof = new ExistenceProof();
+        LeafNode node = LeafNode.fromData(new byte[]{0xa});
+        LeafNode rightSibling = LeafNode.fromData(new byte[]{0xb});
+
+        proof.addRightSibling(rightSibling.getHash());
+
+        ExistenceProof newProof = SerializationUtils.serializeAndBack(proof);
+
+        assertTrue(newProof.validate(node.getHash(), MerkleHash.fromHashCode(paddedHash("11a91b99"))));
     }
 }

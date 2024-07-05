@@ -1,9 +1,10 @@
 package net.fsodre.merkle_tree;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.LinkedList;
 import java.util.List;
-import java.util.Stack;
 
 import net.fsodre.merkle_tree.hashers.MerkleHash;
 import net.fsodre.merkle_tree.nodes.InternalNode;
@@ -24,7 +25,8 @@ import net.fsodre.merkle_tree.nodes.MerkleNode;
  * spots upon adding new leaves in order to be mindful with memory utilization.
  *
  */
-final public class MerkleTree {
+final public class MerkleTree implements Serializable {
+    private static final long serialVersionUID = 1L;
 
     // All nodes in the tree. The bottom layer (leaf nodes) is represented by nodes[0].
     private final ArrayList<ArrayList<MerkleNode>> nodes;
@@ -33,7 +35,7 @@ final public class MerkleTree {
     private final HashMap<String, Integer> leafPosition;
 
     // List of positions of currently empty leafs (initialized as null or deleted).
-    private final Stack<Integer> emptyLeafIndexes;
+    private final LinkedList<Integer> emptyLeafIndexes;
 
     // Root node.
     private MerkleNode root;
@@ -46,7 +48,7 @@ final public class MerkleTree {
         nodes = new ArrayList<>();
         nodes.add(new ArrayList<>());
         leafPosition = new HashMap<>();
-        emptyLeafIndexes = new Stack<>();
+        emptyLeafIndexes = new LinkedList<>();
     }
 
     /**
@@ -57,12 +59,12 @@ final public class MerkleTree {
      * Returns the position in the bottom layer where the node was added.
      */
     public int addLeaf(LeafNode leaf) {
-        int index = emptyLeafIndexes.empty() ? levelSize(0) : emptyLeafIndexes.pop();
+        int index = emptyLeafIndexes.isEmpty() ? levelSize(0) : emptyLeafIndexes.removeFirst();
 
         if (leaf != null) {
             leafPosition.put(leaf.getHash().toString(), index);
         } else {
-            emptyLeafIndexes.add(index);
+            emptyLeafIndexes.addLast(index);
         }
 
         if (index == levelSize(0)) {
@@ -126,7 +128,7 @@ final public class MerkleTree {
 
         leafPosition.remove(getLeaves().get(index).toString());
         getLeaves().set(index, null);
-        emptyLeafIndexes.add(index);
+        emptyLeafIndexes.addLast(index);
         updateInternalNode(1, getParentIndex(index));
     }
 

@@ -14,6 +14,7 @@ import net.fsodre.merkle_tree.hashers.MerkleHash;
  * itself.
  */
 public class LeafNode implements MerkleNode {
+    private static final long serialVersionUID = 1L;
 
     // MerkleHash associated with this node
     private final MerkleHash hash;

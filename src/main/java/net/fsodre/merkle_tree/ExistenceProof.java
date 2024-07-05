@@ -11,6 +11,7 @@ import net.fsodre.merkle_tree.hashers.MerkleHash;
  * in order to reach the root's hash code.
  */
 final public class ExistenceProof implements Serializable {
+    private static final long serialVersionUID = 1L;
 
     /**
      * A Sibling is the sibling of a node that is part of the path between the
@@ -18,7 +19,8 @@ final public class ExistenceProof implements Serializable {
      * sibling node and an indicator telling if it's a sibling to the left or to
      * the right.
      */
-    final private static class Sibling {
+    final private static class Sibling implements Serializable {
+        private static final long serialVersionUID = 1L;
 
         public enum Side {
             LEFT,

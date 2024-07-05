@@ -15,7 +15,7 @@ public class LeafNodeTest {
 
     @BeforeAll
     public static void setUpSuite() {
-        HasherProvider.initialize(new TestHasher());
+        HasherProvider.setHasher(new TestHasher());
     }
 
     @Test

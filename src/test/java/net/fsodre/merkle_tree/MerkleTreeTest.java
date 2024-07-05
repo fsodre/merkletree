@@ -10,6 +10,7 @@ import org.junit.jupiter.api.Test;
 
 import net.fsodre.merkle_tree.hashers.HasherProvider;
 import net.fsodre.merkle_tree.nodes.LeafNode;
+import net.fsodre.merkle_tree.utils.SerializationUtils;
 import net.fsodre.merkle_tree.utils.TestHasher;
 import static net.fsodre.merkle_tree.utils.TestHasher.paddedHash;
 
@@ -19,7 +20,7 @@ public class MerkleTreeTest {
 
     @BeforeAll
     public static void setUpSuite() {
-        HasherProvider.initialize(new TestHasher());
+        HasherProvider.setHasher(new TestHasher());
     }
 
     @BeforeEach
@@ -173,14 +174,14 @@ public class MerkleTreeTest {
 
         tree.removeLeaf(leafA.getHash());
         tree.removeLeafAt(posC);
-        // Will get C's spot
-        tree.addLeaf(LeafNode.fromData(new byte[]{0xd}));
         // Will get A's spot
+        tree.addLeaf(LeafNode.fromData(new byte[]{0xd}));
+        // Will get C's spot
         tree.addLeaf(LeafNode.fromData(new byte[]{0xe}));
         // Will be added to a new spot
         tree.addLeaf(LeafNode.fromData(new byte[]{0xf}));
 
-        assertArrayEquals(paddedHash("111e91b9911d91f999"), tree.getRoot().getHash().toBytes());
+        assertArrayEquals(paddedHash("111d91b9911e91f999"), tree.getRoot().getHash().toBytes());
     }
 
     @Test
@@ -236,5 +237,34 @@ public class MerkleTreeTest {
         ExistenceProof proof = tree.buildExistenceProof(notInTree.getHash());
 
         assertNull(proof);
+    }
+
+    @Test
+    public void testSerialization() throws Exception {
+        LeafNode leafA = LeafNode.fromData(new byte[]{0xa});
+        tree.addLeaf(leafA);
+        LeafNode leafB = LeafNode.fromData(new byte[]{0xb});
+        tree.addLeaf(leafB);
+        LeafNode leafC = LeafNode.fromData(new byte[]{0xc});
+        tree.addLeaf(leafC);
+        LeafNode leafD = LeafNode.fromData(new byte[]{0xd});
+        tree.addLeaf(leafD);
+        LeafNode leafE = LeafNode.fromData(new byte[]{0xe});
+        tree.addLeaf(leafE);
+
+        MerkleTree newTree = SerializationUtils.serializeAndBack(tree);
+
+        ExistenceProof proofA = newTree.buildExistenceProof(leafA.getHash());
+        ExistenceProof proofB = newTree.buildExistenceProof(leafB.getHash());
+        ExistenceProof proofC = newTree.buildExistenceProof(leafC.getHash());
+        ExistenceProof proofD = newTree.buildExistenceProof(leafD.getHash());
+        ExistenceProof proofE = newTree.buildExistenceProof(leafE.getHash());
+
+        assertTrue(proofA.validate(leafA.getHash(), newTree.getRoot().getHash()));
+        assertTrue(proofB.validate(leafB.getHash(), newTree.getRoot().getHash()));
+        assertTrue(proofC.validate(leafC.getHash(), newTree.getRoot().getHash()));
+        assertTrue(proofD.validate(leafD.getHash(), newTree.getRoot().getHash()));
+        assertTrue(proofE.validate(leafE.getHash(), newTree.getRoot().getHash()));
+        
     }
 }

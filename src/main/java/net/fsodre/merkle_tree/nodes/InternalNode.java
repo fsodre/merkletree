@@ -1,7 +1,5 @@
 package net.fsodre.merkle_tree.nodes;
 
-import java.io.Serializable;
-
 import net.fsodre.merkle_tree.hashers.MerkleHash;
 
 /**
@@ -14,7 +12,8 @@ import net.fsodre.merkle_tree.hashers.MerkleHash;
  * concatenation): - 2 children: H(left_child.hash() + right_child.hash()) - 1
  * child (either left or right): H(child.hash()) - No child: null
  */
-public final class InternalNode implements MerkleNode, Serializable {
+public final class InternalNode implements MerkleNode {
+    private static final long serialVersionUID = 1L;
 
     // The hash associated with this node.
     private MerkleHash hash;

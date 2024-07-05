@@ -5,14 +5,13 @@ package net.fsodre.merkle_tree.hashers;
  */
 public class HasherProvider {
 
-    private static Hasher hasher;
+    private static Hasher hasher = new Sha256Hasher();
 
-    public static void initialize(Hasher hasher) {
+    public static void setHasher(Hasher hasher) {
         HasherProvider.hasher = hasher;
     }
 
     public static Hasher getHasher() {
-        assert hasher != null : "Using a non initialized hasher";
         return hasher;
     }
 }

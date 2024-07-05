@@ -11,6 +11,7 @@ import static org.junit.jupiter.api.Assertions.assertThrows;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 
+import net.fsodre.merkle_tree.utils.SerializationUtils;
 import net.fsodre.merkle_tree.utils.TestHasher;
 import static net.fsodre.merkle_tree.utils.TestHasher.paddedHash;
 
@@ -21,7 +22,7 @@ public class MerkleHashTest {
 
     @BeforeAll
     public static void init() {
-        HasherProvider.initialize(new TestHasher());
+        HasherProvider.setHasher(new TestHasher());
     }
 
     @Test
@@ -76,6 +77,8 @@ public class MerkleHashTest {
     public void testSerialization() throws Exception {
         MerkleHash hash = MerkleHash.fromHashCode(VALID_HASH_CODE);
 
-        assertArrayEquals(Hex.decodeHex(VALID_HASH_CODE), hash.concat(null));
+        MerkleHash newHash = SerializationUtils.serializeAndBack(hash);
+
+        assertEquals(hash.toString(), newHash.toString());
     }
 }
